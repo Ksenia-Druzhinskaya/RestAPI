@@ -37,6 +37,29 @@ public class Lesson2HomeworkTests
         System.out.println(location);
     }
 
+    @Test
+    public void testLongRedirectCycle(){
+
+        String location = "https://playground.learnqa.ru/api/long_redirect";
+        int statusCode, redirectCount = 0;
+
+        do {
+            Response response = RestAssured
+                    .given()
+                    .redirects()
+                    .follow(false)
+                    .when()
+                    .get(location)
+                    .andReturn();
+            location = response.getHeader("Location");
+            if(location != null){
+                redirectCount++;
+            }
+            statusCode = response.getStatusCode();
+        } while(statusCode != 200);
+
+        System.out.println(redirectCount);
+    }
 }
 
 
