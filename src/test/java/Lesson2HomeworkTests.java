@@ -1,5 +1,6 @@
 
 import io.restassured.RestAssured;
+import io.restassured.http.Header;
 import io.restassured.http.Headers;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
@@ -20,6 +21,22 @@ public class Lesson2HomeworkTests
         List<Map> messages = jsonPath.getList("messages");
         System.out.println(messages.get(1).get("message"));
     }
+
+    @Test
+    public void testLongRedirect(){
+
+        Response response = RestAssured
+                .given()
+                .redirects()
+                .follow(false)
+                .when()
+                .get("https://playground.learnqa.ru/api/long_redirect")
+                .andReturn();
+
+        String location = response.getHeader("Location");
+        System.out.println(location);
+    }
+
 }
 
 
