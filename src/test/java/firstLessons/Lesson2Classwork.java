@@ -1,3 +1,4 @@
+package firstLessons;
 
 import io.restassured.RestAssured;
 import io.restassured.http.Headers;
@@ -8,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FirstTests
+public class Lesson2Classwork
 {
     @Test
     public void testHello(){

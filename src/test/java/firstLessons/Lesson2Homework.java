@@ -1,3 +1,4 @@
+package firstLessons;
 
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
@@ -7,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.*;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-public class Lesson2HomeworkTests
+public class Lesson2Homework
 {
     @Test
     public void testGetJsonHomework(){
