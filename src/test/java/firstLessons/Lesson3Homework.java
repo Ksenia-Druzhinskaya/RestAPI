@@ -1,6 +1,7 @@
 package firstLessons;
 
 import io.restassured.RestAssured;
+import io.restassured.http.Headers;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,5 +38,21 @@ public class Lesson3Homework
         });
     }
 
+    @Test
+    public void testGetHeaders(){
+        Response response = RestAssured
+                .given()
+                .post("https://playground.learnqa.ru/api/homework_header")
+                .andReturn();
+
+        Headers headers = response.getHeaders();
+        assertTrue(headers.size() > 0, "Headers is empty");
+
+        headers.forEach(h -> {
+            assertFalse(h.getName().isEmpty(), "Header name is empty.");
+            assertFalse(h.getValue().isEmpty(), "Header value is empty.");
+            System.out.println("Header name is '" + h.getName() + "', header value is '" + h.getValue() + "'");
+        });
+    }
 
 }
