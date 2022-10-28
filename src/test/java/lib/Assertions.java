@@ -3,6 +3,8 @@ package lib;
 import io.restassured.response.Response;
 
 import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.not;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -15,7 +17,44 @@ public class Assertions
         assertEquals(expectedValue, value, "JSON value is not equal to expected value");
     }
 
+    public static void assertJsonByName(Response response, String name, String expectedValue){
+        response.then().assertThat().body("$", hasKey(name));
+
+        String value = response.jsonPath().getString(name);
+        assertEquals(expectedValue, value, "JSON value is not equal to expected value");
+    }
+
     public static void assertStringLength(String string, int length){
         assertTrue(string.length() > length, "The string is too short to be used");
+    }
+
+    public static void assertResponseTextEquals(Response response, String expectedAnswer){
+        assertEquals(
+                expectedAnswer,
+                response.asString(),
+                "Response text is not as expected"
+        );
+    }
+
+    public static void assertResponseCodeEquals(Response response, int expectedStatusCode){
+        assertEquals(
+                expectedStatusCode,
+                response.statusCode(),
+                "Response status code is not as expected"
+        );
+    }
+
+    public static void assertJsonHasField(Response response, String expectedFieldName){
+        response.then().assertThat().body("$", hasKey(expectedFieldName));
+    }
+
+    public static void assertJsonHasFields(Response response, String[] expectedFieldNames){
+        for (String name : expectedFieldNames) {
+            response.then().assertThat().body("$", hasKey(name));
+        }
+    }
+
+    public static void assertJsonHasNotField(Response response, String expectedFieldName){
+        response.then().assertThat().body("$", not(hasKey(expectedFieldName)));
     }
 }
