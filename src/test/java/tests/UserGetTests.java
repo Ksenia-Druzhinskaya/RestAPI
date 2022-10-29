@@ -2,6 +2,7 @@ package tests;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import lib.ApiCoreRequests;
 import lib.Assertions;
 import lib.BaseTestCase;
 import lib.DataGenerator;
@@ -12,6 +13,11 @@ import java.util.Map;
 
 public class UserGetTests extends BaseTestCase
 {
+    String cookie;
+    String header;
+    int userIdOnAuth;
+    private final ApiCoreRequests apiCoreRequests = new ApiCoreRequests();
+
     @Test
     public void testGetUserDataNotAuth(){
 
@@ -52,5 +58,42 @@ public class UserGetTests extends BaseTestCase
 
         String[] expectedFields = {"username", "firstName", "lastName", "email"};
         Assertions.assertJsonHasFields(responseUserData, expectedFields);
+    }
+
+    @Test
+    public void testGetUserDetailsAuthAsOtherUser(){
+
+        // Create the first user
+        Map<String, String> firstUserData = DataGenerator.getRegistrationData();
+        Response responseCreateAuth = apiCoreRequests
+                .makePostRequest("https://playground.learnqa.ru/api/user", firstUserData);
+        Assertions.assertResponseCodeEquals(responseCreateAuth, 200);
+
+        // Login as the first user and get user id
+        Response responseGetAuth = apiCoreRequests
+                .makePostRequest("https://playground.learnqa.ru/api/user/login", firstUserData);
+        Assertions.assertResponseCodeEquals(responseGetAuth, 200);
+        this.userIdOnAuth = this.getIntFromJson(responseGetAuth, "user_id");
+
+        // Create the second user
+        Map<String, String> secondUserData = DataGenerator.getRegistrationData();
+        responseCreateAuth = apiCoreRequests
+                .makePostRequest("https://playground.learnqa.ru/api/user", secondUserData);
+        Assertions.assertResponseCodeEquals(responseCreateAuth, 200);
+
+        // Login as the second user
+        responseGetAuth = apiCoreRequests
+                .makePostRequest("https://playground.learnqa.ru/api/user/login", secondUserData);
+        Assertions.assertResponseCodeEquals(responseGetAuth, 200);
+
+        // Get data of the first user
+        Response responseUserData = apiCoreRequests
+                .makeGetRequest("https://playground.learnqa.ru/api/user/" + this.userIdOnAuth);
+
+        responseUserData.prettyPrint();
+        Assertions.assertJsonHasField(responseUserData, "username");
+        Assertions.assertJsonHasNotField(responseUserData, "firstName");
+        Assertions.assertJsonHasNotField(responseUserData, "lastName");
+        Assertions.assertJsonHasNotField(responseUserData, "email");
     }
 }
