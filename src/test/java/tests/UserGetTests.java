@@ -14,9 +14,6 @@ import java.util.Map;
 
 public class UserGetTests extends BaseTestCase
 {
-    String cookie;
-    String header;
-    int userIdOnAuth;
     private final ApiCoreRequests apiCoreRequests = new ApiCoreRequests();
 
     @Test
