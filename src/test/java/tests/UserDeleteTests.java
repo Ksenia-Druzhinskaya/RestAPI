@@ -1,6 +1,6 @@
 package tests;
 
-import io.qameta.allure.Description;
+import io.qameta.allure.*;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import lib.Assertions;
@@ -15,6 +15,8 @@ public class UserDeleteTests extends BaseTestCase
 {
     @Test
     @Description("This test deletes just created user")
+    @Features({@Feature("Delete user"), @Feature("Get user")})
+    @Severity(SeverityLevel.CRITICAL)
     public void testDeleteJustCreatedUser(){
 
         // Create user and login
@@ -39,13 +41,15 @@ public class UserDeleteTests extends BaseTestCase
 
     @Test
     @Description("This test verifies that user cannot be deleted by another user")
+    @Features({@Feature("Delete user"), @Feature("Get user")})
+    @Severity(SeverityLevel.NORMAL)
     public void testDeleteJustCreatedUserByAnotherUser(){
 
         // Generate the first user and get user id
         Map<String, String> firstUserData = DataGenerator.getRegistrationData();
         JsonPath jsonPathCreateAuth = apiCoreRequests
                 .getJsonPathForPostRequest("https://playground.learnqa.ru/api/user/", firstUserData);
-        String firstUserId = jsonPathCreateAuth.getString("id");
+        int firstUserId = jsonPathCreateAuth.getInt("id");
 
         // Create the second user and login as the second user
         this.createUserAndLogin();
@@ -69,6 +73,8 @@ public class UserDeleteTests extends BaseTestCase
 
     @Test
     @Description("This test verifies that user with ID 2 cannot be deleted")
+    @Features({@Feature("Delete user"), @Feature("Get user")})
+    @Severity(SeverityLevel.NORMAL)
     public void testUniqueUserCannotBeDeleted(){
 
         Map<String, String> authData = new HashMap<>();
