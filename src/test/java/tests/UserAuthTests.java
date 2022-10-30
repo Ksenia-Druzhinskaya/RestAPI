@@ -6,8 +6,6 @@ import io.qameta.allure.Feature;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-import jdk.nashorn.internal.ir.annotations.Ignore;
-import lib.ApiCoreRequests;
 import lib.Assertions;
 import lib.BaseTestCase;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,10 +22,7 @@ import java.util.Map;
 @Feature("Authorization")
 public class UserAuthTests extends BaseTestCase
 {
-    String cookie;
-    String header;
     int userIdOnAuth;
-    private final ApiCoreRequests apiCoreRequests = new ApiCoreRequests();
 
     @BeforeEach
     public void loginUser(){
@@ -39,7 +34,7 @@ public class UserAuthTests extends BaseTestCase
                 .makePostRequest("https://playground.learnqa.ru/api/user/login", authData);
 
         this.cookie = this.getCookie(responseGetAuth, "auth_sid");
-        this.header = this.getHeader(responseGetAuth, "x-csrf-token");
+        this.token = this.getHeader(responseGetAuth, "x-csrf-token");
         this.userIdOnAuth = this.getIntFromJson(responseGetAuth, "user_id");
     }
 
@@ -51,7 +46,7 @@ public class UserAuthTests extends BaseTestCase
         Response responseCheckAuth = apiCoreRequests
                 .makeGetRequest(
                         "https://playground.learnqa.ru/api/user/auth",
-                        this.header,
+                        this.token,
                         this.cookie);
 
         Assertions.assertJsonByName(responseCheckAuth, "user_id", this.userIdOnAuth);
@@ -71,7 +66,7 @@ public class UserAuthTests extends BaseTestCase
         if(condition.equals("cookie")){
             spec.cookie("auth_sid", this.cookie);
         }else if(condition.equals("headers")){
-            spec.header("x-csrf-token", this.header);
+            spec.header("x-csrf-token", this.token);
         }else{
             throw new IllegalArgumentException("Condition value is not known: " + condition);
         }
@@ -95,7 +90,7 @@ public class UserAuthTests extends BaseTestCase
         }else if(condition.equals("headers")){
             Response responseForCheck = apiCoreRequests.makeGetRequestWithToken(
                     "https://playground.learnqa.ru/api/user/auth",
-                    this.header
+                    this.token
             );
             Assertions.assertJsonByName(responseForCheck, "user_id", 0);
         } else {

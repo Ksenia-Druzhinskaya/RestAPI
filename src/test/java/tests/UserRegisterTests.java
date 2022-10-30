@@ -1,8 +1,6 @@
 package tests;
 
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import lib.ApiCoreRequests;
 import lib.Assertions;
 import lib.BaseTestCase;
 import lib.DataGenerator;
@@ -15,8 +13,6 @@ import java.util.Map;
 
 public class UserRegisterTests extends BaseTestCase
 {
-    private final ApiCoreRequests apiCoreRequests = new ApiCoreRequests();
-
     @Test
     public void testCreateUserWithExistingEmail(){
         String email = "vinkotov@example.com";
