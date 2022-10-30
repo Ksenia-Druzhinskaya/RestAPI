@@ -1,8 +1,6 @@
 package tests;
 
-import io.qameta.allure.Description;
-import io.qameta.allure.Epic;
-import io.qameta.allure.Feature;
+import io.qameta.allure.*;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
@@ -41,6 +39,7 @@ public class UserAuthTests extends BaseTestCase
     @Test
     @Description("This test successfully authorizes user by email and password")
     @DisplayName("Test positive auth user")
+    @Severity(SeverityLevel.CRITICAL)
     public void testAuthUser(){
 
         Response responseCheckAuth = apiCoreRequests
@@ -56,8 +55,9 @@ public class UserAuthTests extends BaseTestCase
     @Disabled
     @ParameterizedTest
     @ValueSource(strings = {"cookie", "headers"})
-    @Description("This test checks authorization status without sending cookie or token")
+    @Description("This test verifies authorization status without sending cookie or token")
     @DisplayName("Test negative auth user")
+    @Severity(SeverityLevel.CRITICAL)
     public void testNegativeAuthUserOld(String condition){
 
         RequestSpecification spec = RestAssured.given();
@@ -77,8 +77,9 @@ public class UserAuthTests extends BaseTestCase
 
     @ParameterizedTest
     @ValueSource(strings = {"cookie", "headers"})
-    @Description("This test checks authorization status without sending cookie or token")
+    @Description("This test verifies authorization status without sending cookie or token")
     @DisplayName("Test negative auth user")
+    @Severity(SeverityLevel.CRITICAL)
     public void testNegativeAuthUser(String condition){
 
         if(condition.equals("cookie")){

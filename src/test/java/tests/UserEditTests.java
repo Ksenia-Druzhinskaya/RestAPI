@@ -1,6 +1,6 @@
 package tests;
 
-import io.qameta.allure.Description;
+import io.qameta.allure.*;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import lib.Assertions;
@@ -15,6 +15,8 @@ public class UserEditTests extends BaseTestCase
 {
     @Test
     @Description("This test edits just created user")
+    @Features({@Feature("Edit user"), @Feature("Get user")})
+    @Severity(SeverityLevel.CRITICAL)
     public void testEditJustCreatedUser(){
 
         // Create user and login
@@ -42,6 +44,8 @@ public class UserEditTests extends BaseTestCase
 
     @Test
     @Description("This test verifies that user cannot be edited without authorization")
+    @Features({@Feature("Edit user"), @Feature("Get user")})
+    @Severity(SeverityLevel.NORMAL)
     public void testEditJustCreatedUserWithoutAuthorization(){
 
         // Create user and login
@@ -67,6 +71,8 @@ public class UserEditTests extends BaseTestCase
 
     @Test
     @Description("This test verifies that user email cannot be changed to incorrect email")
+    @Features({@Feature("Edit user"), @Feature("Get user")})
+    @Severity(SeverityLevel.MINOR)
     public void testEditEmailToIncorrectForJustCreatedUser(){
 
         // Create user and login
@@ -94,6 +100,8 @@ public class UserEditTests extends BaseTestCase
 
     @Test
     @Description("This test verifies that user name cannot be changed to name with one letter")
+    @Features({@Feature("Edit user"), @Feature("Get user")})
+    @Severity(SeverityLevel.MINOR)
     public void testEditFirstNameToIncorrectForJustCreatedUser(){
 
         // Create user and login
@@ -121,6 +129,8 @@ public class UserEditTests extends BaseTestCase
 
     @Test
     @Description("This test verifies that user cannot be edited by another user")
+    @Features({@Feature("Edit user"), @Feature("Get user")})
+    @Severity(SeverityLevel.NORMAL)
     public void testEditFirstNameForJustCreatedUserByAnotherUser(){
 
         // Generate the first user and get user id
