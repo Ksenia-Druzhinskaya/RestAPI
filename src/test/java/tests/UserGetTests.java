@@ -80,10 +80,15 @@ public class UserGetTests extends BaseTestCase
         Response responseGetAuth = apiCoreRequests
                 .makePostRequest("https://playground.learnqa.ru/api/user/login", secondUserData);
         Assertions.assertResponseCodeEquals(responseGetAuth, 200);
+        String cookie = this.getCookie(responseGetAuth, "auth_sid");
+        String token = this.getHeader(responseGetAuth, "x-csrf-token");
 
         // Get data of the first user
         Response responseUserData = apiCoreRequests
-                .makeGetRequest("https://playground.learnqa.ru/api/user/" + userId);
+                .makeGetRequest(
+                        "https://playground.learnqa.ru/api/user/" + userId,
+                        token,
+                        cookie);
 
         responseUserData.prettyPrint();
         Assertions.assertJsonHasField(responseUserData, "username");
